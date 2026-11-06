@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Күзгі түстер</title>
+<style>
+:root{--R:#E53935;--Y:#FDD835;--G:#43A047;--O:#FB8C00;--s:clamp(90px,13vmin,120px);--t:clamp(84px,19vmin,160px)}
+*{box-sizing:border-box;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;touch-action:none;font-family:"Trebuchet MS","Comic Sans MS",Arial,sans-serif;overscroll-behavior:none}
+/* Күзгі орман фоны */
+body{background:linear-gradient(#039BE5,#4FC3F7 52%,#6D4C41 52%,#4E342E)}
+#trees{position:fixed;left:0;right:0;bottom:46%;display:flex;justify-content:space-around;font-size:clamp(70px,16vmin,130px);line-height:1;pointer-events:none}
+#leaves{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:1}
+#leaves i{position:absolute;top:-12vh;font-style:normal;animation:fall linear infinite}
+@keyframes fall{0%{transform:translate(0,0) rotate(0)}50%{transform:translate(var(--dx),55vh) rotate(180deg)}100%{transform:translate(0,115vh) rotate(360deg)}}
+.scr{position:fixed;inset:0;display:none;z-index:2}.scr.on{display:flex}
+/* Басты бет */
+#home{flex-direction:column;align-items:center;justify-content:center;gap:2vmin}
+h1{margin:0;font-size:clamp(34px,9vmin,84px);color:#FDD835;text-shadow:0 5px 0 #BF360C,0 0 0 #fff,-3px 0 0 #BF360C,3px 0 0 #BF360C;letter-spacing:1px;text-align:center}
+#cards{display:grid;grid-template-columns:repeat(2,auto);gap:3vmin}
+@media (orientation:landscape){#cards{grid-template-columns:repeat(4,auto)}}
+.card{width:min(40vw,30vh);min-width:130px;aspect-ratio:1;max-width:260px;border:8px solid #fff;border-radius:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 0 rgba(0,0,0,.3);transition:transform .15s;padding:0;font:inherit}
+@media (orientation:landscape){.card{width:min(21vw,48vh)}}
+.card:active{transform:scale(.93)}
+.card b{font-size:min(17vw,13vh);line-height:1.1;font-weight:400}
+@media (orientation:landscape){.card b{font-size:min(9vw,20vh)}}
+.card span{background:#fff;color:#4E342E;border-radius:20px;padding:2px 14px;font-size:clamp(14px,3vmin,24px);font-weight:700}
+/* Ойын */
+#game{flex-direction:column;padding:0 1vmin}
+#ch{height:34%;display:flex;align-items:flex-end;justify-content:center;padding-top:80px}
+#sp{flex:1}
+#tg{display:flex;justify-content:center;align-items:flex-end;gap:2vmin;padding:1vmin 1vmin 3vmin}
+.chr{position:relative;font-size:clamp(100px,24vmin,190px);line-height:1;animation:bob 2s ease-in-out infinite}
+.chr .tr{position:absolute;left:50%;top:-8%;transform:translateX(-50%);font-size:1.5em;z-index:-1;font-style:normal}
+.chr .say{position:absolute;left:50%;top:-.1em;transform:translate(-50%,-100%) scale(0);background:#fff;border:5px solid #E53935;border-radius:30px;padding:4px 18px;font-size:.28em;font-weight:800;color:#BF360C;white-space:nowrap;z-index:5}
+.chr .say.on{animation:sayp 1.4s forwards}
+@keyframes sayp{0%{transform:translate(-50%,-100%) scale(0)}15%,80%{transform:translate(-50%,-100%) scale(1)}100%{transform:translate(-50%,-100%) scale(0)}}
+@keyframes bob{50%{transform:translateY(-2.5%) rotate(-2deg)}}
+.chr.happy{animation:jump .8s ease 1}
+.chr.dance{animation:dance .9s ease 1}
+.chr.party{animation:jump .6s ease infinite}
+@keyframes jump{30%{transform:translateY(-14%) scale(1.12,.95)}60%{transform:translateY(0) scale(.95,1.08)}80%{transform:translateY(-5%) rotate(8deg)}}
+@keyframes dance{20%{transform:rotate(-14deg) translateY(-8%)}40%{transform:rotate(14deg)}60%{transform:rotate(-14deg) translateY(-8%)}80%{transform:rotate(14deg)}}
+.t{flex:0 1 var(--t);aspect-ratio:1;min-width:0;border:6px solid #fff;border-radius:34%;display:flex;align-items:center;justify-content:center;font-size:calc(var(--t)*.5);box-shadow:0 7px 0 rgba(0,0,0,.3);position:relative}
+.t.wag{border-radius:24px;height:60%}
+.t.wag::after{content:"";position:absolute;bottom:-18px;left:14%;width:22%;aspect-ratio:1;background:#37474F;border:3px solid #fff;border-radius:50%;box-shadow:calc(var(--t)*.4) 0 0 -0px #37474F}
+.t.pop{animation:tpop .7s ease}
+.t.shake{animation:tshake .6s ease}
+@keyframes tpop{30%{transform:scale(1.18) rotate(-6deg)}60%{transform:scale(.95) rotate(5deg)}}
+@keyframes tshake{20%{transform:rotate(-9deg)}40%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(3deg)}}
+.loco{flex:0 1 calc(var(--t)*1.15);font-size:calc(var(--t)*.95);line-height:1;position:relative;animation:none}
+.loco .tr{transform:scaleX(-1);display:block;position:static;font-size:1em;z-index:0}
+.loco .dog{position:absolute;left:30%;top:-12%;font-size:.5em;font-style:normal;transform:scaleX(-1)}
+.loco .say{font-size:.2em}
+/* Заттар */
+.it{position:absolute;left:0;top:0;width:var(--s);height:var(--s);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:grab;touch-action:none;z-index:10;font-size:calc(var(--s)*.58);will-change:transform;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25))}
+.it.ball{border:5px solid #fff}
+.it.up{z-index:30;cursor:grabbing}
+.it.up>*{transform:scale(1.18)}
+.it.ret{transition:transform .55s cubic-bezier(.3,1.5,.5,1),opacity .4s}
+.it.fly{transition:transform .5s ease-in,opacity .5s;opacity:0}
+.it.hid{opacity:0;pointer-events:none}
+.it svg{width:100%;height:100%}
+.sm{position:fixed;font-size:44px;pointer-events:none;z-index:25;animation:smk 2s ease-out forwards}
+@keyframes smk{to{transform:translate(-60px,-140px) scale(2.2);opacity:0}}
+.cf{position:fixed;font-size:30px;pointer-events:none;z-index:60;font-style:normal}
+#pr{position:fixed;left:0;right:0;top:36%;text-align:center;font-size:clamp(46px,14vmin,120px);font-weight:900;color:#FDD835;-webkit-text-stroke:3px #BF360C;text-shadow:0 6px 0 #BF360C;pointer-events:none;z-index:70;transform:scale(0)}
+#pr.on{animation:prp 1.4s forwards}
+@keyframes prp{0%{transform:scale(0) rotate(-8deg)}20%{transform:scale(1.15) rotate(3deg)}35%,80%{transform:scale(1)}100%{transform:scale(0)}}
+.rb{position:fixed;top:12px;width:72px;height:72px;border-radius:50%;border:6px solid #fff;font-size:38px;display:none;align-items:center;justify-content:center;cursor:pointer;z-index:80;box-shadow:0 5px 0 rgba(0,0,0,.3);padding:0;touch-action:manipulation}
+#hb{left:12px;background:var(--O)}#mu{right:12px;background:var(--G);display:flex}
+body.ing #hb{display:flex}
+.rb:active{transform:scale(.9)}
+/* Соңғы экран */
+#end{flex-direction:column;align-items:center;justify-content:center;gap:2vmin;background:rgba(62,39,35,.78);z-index:90}
+#end h2{margin:0;font-size:clamp(46px,13vmin,110px);color:#FDD835;-webkit-text-stroke:3px #BF360C;text-shadow:0 6px 0 #BF360C}
+#end .chr{font-size:clamp(110px,28vmin,220px)}
+#end .row{display:flex;gap:3vmin;flex-wrap:wrap;justify-content:center}
+.big{border:8px solid #fff;border-radius:40px;color:#fff;font:700 clamp(20px,4.5vmin,36px) inherit;font-family:inherit;padding:2vmin 4vmin;cursor:pointer;display:flex;align-items:center;gap:12px;box-shadow:0 8px 0 rgba(0,0,0,.35);touch-action:manipulation}
+.big b{font-size:2em;font-weight:400}.big:active{transform:scale(.94)}
+@media (prefers-reduced-motion:reduce){#leaves i{animation-duration:30s!important}}
+</style>
+</head>
+<body>
+<div id="trees"><span>🌲</span><span>🍂</span><span>🌳</span><span>🌲</span><span>🌳</span></div>
+<div id="leaves"></div>
+<button class="rb" id="hb" aria-label="Үйге">🏠</button>
+<button class="rb" id="mu" aria-label="Дыбыс">🔊</button>
+<div id="pr"></div>
+
+<div class="scr on" id="home">
+  <h1>🍁 Күзгі түстер 🍂</h1>
+  <div id="cards"></div>
+</div>
+<div class="scr" id="game"></div>
+<div class="scr" id="end"></div>
+
+<script>
+'use strict';
+/* ===== Деректер: түстер мен ойындар (жаңа зат қосу оңай) ===== */
+const C={R:'#E53935',Y:'#FDD835',G:'#43A047',O:'#FB8C00'};
+// Күлкілі жүзді жапырақ (SVG, жұмыр пішін)
+const leaf=c=>`<svg viewBox="0 0 100 100"><path d="M50 10C84 24 90 58 50 90 10 58 16 24 50 10Z" fill="${C[c]}" stroke="#fff" stroke-width="7" stroke-linejoin="round"/><circle cx="37" cy="46" r="10" fill="#fff"/><circle cx="63" cy="46" r="10" fill="#fff"/><circle cx="39" cy="47" r="5" fill="#222"/><circle cx="61" cy="47" r="5" fill="#222"/><path d="M38 65Q50 77 62 65" fill="none" stroke="#222" stroke-width="4.5" stroke-linecap="round"/></svg>`;
+const GAMES=[
+ {icon:'🐻',name:'Аю',card:'R',ch:'🐻',say:'Сылдыр! 👏',react:'happy',mode:'fall',leaf:1,
+  tg:['R','Y','G'],tgIcon:'🧺',items:'RYGRYGRY'.split('').map(c=>[c,''])},
+ {icon:'🦔',name:'Кірпі',card:'Y',ch:'🦔',say:'Пыс-пыс!',react:'dance',mode:'queue',tune:1,
+  tg:['R','Y','O'],tgIcon:'🍽️',items:[['R','🍎'],['Y','🍐'],['O','🍄'],['Y','🍐'],['R','🍎'],['O','🍄']]},
+ {icon:'🐿️',name:'Тиін',card:'G',ch:'<i class="tr">🌳</i>🐿️',say:'Рақмет! 😉',react:'happy',mode:'row',
+  tg:['Y','G','R'],tgIcon:'👝',items:[['Y','🥜'],['G','🌰'],['R','🌸'],['G','🌰'],['R','🌸'],['Y','🥜']]},
+ {icon:'🚂',name:'Поезд',card:'O',train:1,say:'Ура! 🐶',react:'happy',mode:'row',tune:2,
+  tg:['R','Y','G','O'],tgIcon:'📦',items:[['R','🍅'],['Y','🎃'],['O','🥕'],['G','🥒'],['Y','🍌'],['G','🍃'],['R','🍎'],['O','🍊']]}
+];
+const PRAISE=[['Жарайсың!','kk'],['Керемет!','kk'],['Молодец!','ru']];
+const TUNES=[[],[[523,.2],[659,.2],[784,.2],[659,.2],[523,.2],[659,.2],[784,.4]],[[392,.2],[523,.2],[659,.2],[784,.2],[1047,.5]]];
+
+/* ===== Дыбыс (Web Audio, файлсыз) ===== */
+let AC=null,mute=false;
+function au(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type='sine',v=.15,at=0,f2){if(mute||!AC)return;const o=AC.createOscillator(),g=AC.createGain(),n=AC.currentTime+at;o.type=type;o.frequency.setValueAtTime(f,n);if(f2)o.frequency.exponentialRampToValueAtTime(f2,n+d);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(v,n+.02);g.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(g);g.connect(AC.destination);o.start(n);o.stop(n+d+.05)}
+function clap(){if(mute||!AC)return;for(let k=0;k<3;k++){const n=AC.currentTime+.35+k*.11,b=AC.createBuffer(1,AC.sampleRate*.06,AC.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const s=AC.createBufferSource(),g=AC.createGain(),f=AC.createBiquadFilter();f.type='bandpass';f.frequency.value=1800;g.gain.value=.22;s.buffer=b;s.connect(f);f.connect(g);g.connect(AC.destination);s.start(n)}}
+const sGrab=()=>tone(380,.22,'sine',.18,0,900);                       // жұмсақ «уии»
+const sOk=()=>{[1047,1319,1568,2093].forEach((f,i)=>tone(f,.4,'triangle',.12,i*.09));clap()}; // қоңырау + шапалақ
+const sBad=()=>tone(260,.35,'sine',.13,0,190);                         // жұмсақ төмен дыбыс
+const sHonk=()=>{tone(300,.5,'sawtooth',.07);tone(380,.5,'sawtooth',.07)};
+function melody(a){let t=0;a.forEach(([f,d])=>{tone(f,d*.9,'triangle',.14,t);t+=d})}
+
+/* ===== Жалпы көмекшілер ===== */
+const $=id=>document.getElementById(id);
+let gen=0,cur=0,raf=0;
+const after=(ms,fn)=>{const g=gen;setTimeout(()=>{if(g===gen)fn()},ms)};
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',s.id===id));document.body.classList.toggle('ing',id!=='home')}
+function restart(el,cls){el.classList.remove(cls);void el.offsetWidth;el.classList.add(cls)}
+function conf(x,y,n=14){for(let i=0;i<n;i++){const e=document.createElement('i');e.className='cf';e.textContent=['⭐','✨','🌟','🎉'][i%4];e.style.left=x+'px';e.style.top=y+'px';document.body.appendChild(e);const a=Math.random()*6.28,d=80+Math.random()*130;e.animate([{transform:'translate(0,0) scale(.4)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d-60}px) scale(1.3) rotate(${Math.random()*360}deg)`,opacity:0}],{duration:1200,easing:'ease-out'}).onfinish=()=>e.remove()}}
+function praise(){const [w,l]=PRAISE[Math.random()*3|0],p=$('pr');p.textContent=w;restart(p,'on');}
+function bubble(txt){const b=document.querySelector('#cr .say');if(b){b.textContent=txt;restart(b,'on')}}
+
+/* ===== Фон жапырақтары ===== */
+(function(){const L=$('leaves'),em=['🍁','🍂','🍃','🍁','🍂'];for(let i=0;i<16;i++){const e=document.createElement('i');e.textContent=em[i%5];e.style.cssText=`left:${Math.random()*96}%;font-size:${24+Math.random()*26}px;animation-duration:${10+Math.random()*10}s;animation-delay:${-Math.random()*18}s;--dx:${(Math.random()-.5)*160}px`;L.appendChild(e)}})();
+
+/* ===== Басты бет ===== */
+GAMES.forEach((g,i)=>{const b=document.createElement('button');b.className='card';b.style.background=C[g.card];b.innerHTML=`<b>${g.icon}</b><span>${g.name}</span>`;b.onclick=()=>{au();start(i)};$('cards').appendChild(b)});
+$('hb').onclick=goHome;
+$('mu').onclick=()=>{au();mute=!mute;$('mu').textContent=mute?'🔇':'🔊';};
+document.addEventListener('pointerdown',au,{once:false});
+function goHome(){gen++;cancelAnimationFrame(raf);show('home')}
+
+/* ===== Ойын қозғалтқышы ===== */
+let S,its=[],W=0,H=0,sz=100,left=0,drag=null,busy=false,qi=0,G;
+function start(i){
+  gen++;cancelAnimationFrame(raf);cur=i;G=GAMES[i];S=$('game');its=[];left=G.items.length;qi=0;busy=false;drag=null;
+  const tgH=G.tg.map(c=>`<div class="t${G.train?' wag':''}" data-c="${c}" style="background:${C[c]}">${G.tgIcon}</div>`).join('');
+  if(G.train)S.innerHTML=`<div id="tg">${tgH}<div class="chr loco" id="cr"><span class="tr">🚂</span><i class="dog">🐶</i><b class="say"></b></div></div><div id="sp"></div>`;
+  else S.innerHTML=`<div id="ch"><div class="chr" id="cr">${G.ch}<b class="say"></b></div></div><div id="sp"></div><div id="tg">${tgH}</div>`;
+  show('game');
+  G.items.forEach(([c,e],k)=>{const el=document.createElement('div');el.className='it'+(G.leaf?'':' ball');if(G.leaf)el.innerHTML=leaf(c);else{el.style.background=C[c];el.textContent=e}S.appendChild(el);const o={el,c,e,x:0,y:0,k,v:0};el._o=o;its.push(o)});
+  layout();
+  if(G.mode==='fall'){busy=false;last=performance.now();raf=requestAnimationFrame(loop)}
+  if(G.mode==='queue'){its.forEach((o,k)=>o.el.classList.toggle('hid',k>0))}
+  if(G.train){busy=true;its.forEach(o=>o.el.classList.add('hid'));const tg=$('tg');tg.style.transform='translateX(-115vw)';tg.style.transition='none';
+    tone(200,.4,'square',.04);for(let k=0;k<8;k++)tone(160,.12,'square',.04,k*.28);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{tg.style.transition='transform 2.2s cubic-bezier(.2,.8,.3,1)';tg.style.transform='translateX(0)'}));
+    after(2400,()=>{sHonk();bubble('Чу-чу!');its.forEach(o=>o.el.classList.remove('hid'));busy=false})}
+}
+// Заттардың бастапқы орнын есептеу
+function layout(){
+  const sr=S.getBoundingClientRect();W=sr.width;H=sr.height;sz=its[0].el.offsetWidth;
+  const sp=$('sp').getBoundingClientRect(),n=its.length,tgT=$('tg').getBoundingClientRect().top-sr.top;
+  if(G.mode==='fall'){its.forEach((o,k)=>{o.x=(((k*5)%n)+.5)/n*(W-sz);o.y=-sz+(k/n)*(tgT-sz*.2);o.v=34+Math.random()*22;o.hx=o.x;o.hy=o.y;set(o)});return}
+  if(G.mode==='queue'){const c=$('cr').getBoundingClientRect();its.forEach(o=>{o.x=c.left-sr.left+c.width/2-sz/2;o.y=c.top-sr.top-sz*.05;set(o)});return}
+  const x0=sp.left-sr.left,y0=sp.top-sr.top,cols=Math.max(1,Math.min(n,Math.floor(sp.width/(sz+12)))),rows=Math.ceil(n/cols);
+  its.forEach((o,k)=>{const r=Math.floor(k/cols),inRow=Math.min(cols,n-r*cols),c=k%cols;o.x=x0+sp.width/2-inRow*(sz+12)/2+c*(sz+12)+6;o.y=y0+Math.max(0,(sp.height-rows*(sz+10))/2)+r*(sz+10);set(o)});
+}
+const set=(o,sc)=>{o.el.style.transform=`translate(${o.x}px,${o.y}px)${sc?` scale(${sc})`:''}`};
+let last=0;
+// Жапырақтар баяу түседі
+function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;const lim=$('tg').getBoundingClientRect().top-S.getBoundingClientRect().top-sz*.3;
+  its.forEach(o=>{if(!o.drag&&!o.ret&&!o.done){o.y+=o.v*dt;if(o.y>lim)o.y=-sz;set(o)}});raf=requestAnimationFrame(loop)}
+window.addEventListener('resize',()=>{if(S&&$('game').classList.contains('on')&&its.length){const rem=its.filter(o=>!o.done);if(!rem.length)return;const keep=its.map(o=>o.done);layout();its.forEach((o,k)=>{if(keep[k])o.el.style.display='none'})}});
+
+/* ===== Сүйреу (Pointer Events) ===== */
+function wire(){
+  const sc=$('game');
+  sc.addEventListener('pointerdown',e=>{const el=e.target.closest('.it');if(!el||busy)return;const o=el._o;if(o.done||o.ret||drag)return;au();
+    drag=o;o.drag=1;o.px=o.x;o.py=o.y;const r=S.getBoundingClientRect();o.ox=e.clientX-r.left-o.x;o.oy=e.clientY-r.top-o.y;
+    el.classList.add('up');try{el.setPointerCapture(e.pointerId)}catch(_){}sGrab();e.preventDefault()});
+  sc.addEventListener('pointermove',e=>{if(!drag)return;const r=S.getBoundingClientRect();drag.x=e.clientX-r.left-drag.ox;drag.y=e.clientY-r.top-drag.oy;set(drag);e.preventDefault()});
+  const up=e=>{if(!drag)return;const o=drag;drag=null;o.drag=0;o.el.classList.remove('up');
+    const cx=o.x+sz/2,cy=o.y+sz/2,r=S.getBoundingClientRect();let hit=null;
+    document.querySelectorAll('#tg .t').forEach(t=>{const b=t.getBoundingClientRect(),m=22;if(r.left+cx>b.left-m&&r.left+cx<b.right+m&&r.top+cy>b.top-m&&r.top+cy<b.bottom+m)hit=t});
+    if(hit&&hit.dataset.c===o.c)good(o,hit);else{if(hit){restart(hit,'shake');hit.classList.remove('pop');sBad()}back(o)}};
+  sc.addEventListener('pointerup',up);sc.addEventListener('pointercancel',up);
+}
+wire();
+// Қате: зат жұмсақ анимациямен қайтады (жаза жоқ)
+function back(o){o.ret=1;o.x=o.px;o.y=o.py;o.el.classList.add('ret');set(o);setTimeout(()=>{o.el.classList.remove('ret');o.ret=0},560)}
+// Дұрыс: қуаныш
+function good(o,t){
+  o.done=1;left--;const sr=S.getBoundingClientRect(),b=t.getBoundingClientRect();
+  o.x=b.left-sr.left+b.width/2-sz/2;o.y=b.top-sr.top+b.height/2-sz/2;o.el.classList.add('fly');set(o,.3);
+  restart(t,'pop');sOk();praise();conf(b.left+b.width/2,b.top+b.height/2);
+  const c=$('cr');restart(c,G.react);bubble(G.say);
+  if(G.tune&&left>0&&G.tune===1)after(500,()=>melody(TUNES[1]));
+  if(G.mode==='queue'&&left>0){qi++;after(900,()=>its[qi].el.classList.remove('hid'))}
+  if(left===0)after(1100,finish);
+}
+function finish(){
+  busy=true;cancelAnimationFrame(raf);
+  if(G.train){const tg=$('tg');sHonk();bubble('Чу-чу!');melody(TUNES[2]);
+    const iv=setInterval(()=>{const l=document.querySelector('.loco .tr');if(!l)return;const b=l.getBoundingClientRect(),p=document.createElement('i');p.className='sm';p.textContent='☁️';p.style.left=b.left+b.width*.7+'px';p.style.top=b.top+'px';p.style.fontStyle='normal';document.body.appendChild(p);setTimeout(()=>p.remove(),2000)},260);
+    tg.style.transition='transform 3.4s cubic-bezier(.6,0,.9,.5)';tg.style.transform='translateX(125vw)';
+    after(3500,()=>{clearInterval(iv);endScreen()});setTimeout(()=>clearInterval(iv),4200)}
+  else{melody(TUNES[2]);restart($('cr'),'happy');after(1500,endScreen)}
+}
+/* ===== «Жарайсың!» экраны ===== */
+function endScreen(){
+  const ch=G.train?'<span style="display:inline-block">🚂</span><i style="font-style:normal">🐶</i>':G.ch.replace(/<i class="tr">.*?<\/i>/,'');
+  $('end').innerHTML=`<h2>🎉 Жарайсың! 🎉</h2><div class="chr party">${ch}</div><div class="row"><button class="big" id="again" style="background:var(--G)"><b>🔄</b>Қайтадан ойнау</button><button class="big" id="toHome" style="background:var(--O)"><b>🏠</b>Үйге</button></div>`;
+  show('end');document.body.classList.add('ing');$('hb').style.display='none';
+  $('again').onclick=()=>{$('hb').style.display='';start(cur)};$('toHome').onclick=()=>{$('hb').style.display='';goHome()};
+  sOk();melody(TUNES[2]);
+  let n=0;const iv=setInterval(()=>{if(!$('end').classList.contains('on')||n++>7)return clearInterval(iv);conf(innerWidth*(.15+Math.random()*.7),innerHeight*(.2+Math.random()*.4),12)},500);
+}
+</script>
+</body>
+</html>
